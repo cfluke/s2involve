@@ -96,7 +96,7 @@ typedef struct {
    int f[3];
 } Axes;
 
-typdef struct {
+typedef struct {
    char **axis;
 } Labels;
 
@@ -170,6 +170,10 @@ Panel initPanel(int cubeID, int ctype, int i, int j, int Nx, int Ny, int Nbin)
    for (i=0;i<3;i++) {
       p.labels.axis[i] = (char *)calloc(LABELLEN, sizeof(char));
    }
+   sprintf(p.labels.axis[0],"%s","Right Ascension");
+   sprintf(p.labels.axis[1],"%s","Declination");
+   sprintf(p.labels.axis[2],"%s","Velocity");
+
 
    xs2cp(p.pid);
    xs2lpc(0, p.pid);
@@ -789,19 +793,31 @@ int kcb(unsigned char *key)
    return 0;
 }
 
+void labelaxes(Panel p)
+{
+   s2lab(p.labels.axis[0], p.labels.axis[1], p.labels.axis[2], "");
+}
+
 
 void cb(double *t, int *kc, int *value)
 {
+/* Row and column for the current panel */
+   int row = *value%config.Ny;
+   int col = *value/config.Ny;
+
 /* Reset coordinates of current window and set default drawing colour */
    s2swin(0,1,0,1,0,1);
    s2sci(S2_PG_WHITE);
 
+   s2sch(2);
    pushVRMLname("ANON");
    s2box("BCDE",0,0,"BCDE",0,0,"BCDE",0,0);
 
-/* Row and column for the current panel */
-   int row = *value%config.Ny;
-   int col = *value/config.Ny;
+   pushVRMLname("AXES");
+   s2box("BCOQ",0,0,"BDOQ",0,0,"BCDOQ",0,0);
+   s2sch(2.01);
+  
+   labelaxes(config.panel[col][row]);
 
 /* Determine the type of texture object to display */
    if (config.panel[col][row].ctype == TEX3D) { 
@@ -820,8 +836,6 @@ void cb(double *t, int *kc, int *value)
 /* CJF: Break this from a key-press? */
    config.panel[col][row].h.log = ((*kc+1)%2);
 
-
-   labelaxes(config.panel[col][row]);
 
    if (plotit > 0) {
       char pname[128];
@@ -845,6 +859,8 @@ void cb(double *t, int *kc, int *value)
       plotHistogram(config.panel[col][row].h, config.panel[col][row].dv, config.panel[col][row].ct.vp);
 
    if (plotit < 0) plotit = 0;
+
+   pushVRMLname("ANON");
 }
 
 
@@ -1358,7 +1374,7 @@ int main(int argc, char *argv[])
 
 /* Draw and label a box: required to get camera locations right */
    s2swin(-1,1,-1,1,-1,1);
-   s2box("BCDET",0,0,"BCDET",0,0,"BCDET",0,0);
+   s2box("BCDE",0,0,"BCDE",0,0,"BCDE",0,0);
 
 /* Set up the S2PLOT lights for volume rendering */
    vrlights();

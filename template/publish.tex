@@ -60,7 +60,7 @@
 \includegraphics[width=CWDTH\linewidth,height=CHGHT\linewidth,angle=0]{{OBJNAME-cbar}.png}
 \end{center}
 \caption{OBJNAME. Three-dimensional visualisation performed with the 
-{\tt S2PLOT} programming library (Barnes et al. 2006), using {\tt s2fits} 
+{\sc s2plot} programming library (Barnes et al. 2006), using {\sc s2involve} 
 (Fluke \& Barnes, {\em in prep}).  (Upper panel) This is an interactive 
 figure for viewing with Adobe Reader (Version 8.0 or higher).  
 (Lower panel) Histogram of $\log_{10}({\rm Intensity})$, scaled to maximum bin value in 
@@ -77,8 +77,8 @@ histogram mean and one standard deviation limits. }
 
 \includegraphics[width=CWDTH\linewidth,height=CHGHT\linewidth,angle=0]{{OBJNAME-cbar}.png}
 \end{center}
-\caption{OBJNAME. Three-dimensional visualisation performed with the {\tt S2PLOT}
-programming library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).  (Upper panel) Printable image of spectral data cube using 3D texture volume rendering. 
+\caption{OBJNAME. Three-dimensional visualisation performed with the {\sc s2plot}
+programming library (Barnes et al. 2006), using {\sc s2involve} (Fluke \& Barnes, {\em in prep}).  (Upper panel) Printable image of spectral data cube using 3D texture volume rendering. 
 (Lower panel) Histogram of $\log_{10}({\rm Intensity})$, scaled to maximum bin value in 
 arbitrary units. Data range (top row of numbers) and plotted data range (bottom row of numbers) are 
 shown in the image.  Additional data is contained in Table \ref{tbl:meta}. The black `T' shows the 
@@ -89,7 +89,7 @@ histogram mean and one standard deviation limits. }
 \section{Metadata}
 
 \begin{table}[h]
-\caption{{OBJNAME} meta data from {\tt s2fits}.}
+\caption{{OBJNAME} meta data from {\sc s2involve}.}
 \label{tbl:meta}
 \begin{center}
 \begin{tabular}{lrl}
@@ -104,8 +104,8 @@ histogram mean and one standard deviation limits. }
 \section*{Credits}
 If you find this approach to visualising spectral data cubes to be useful, 
 it would be greatly appreciated if you can cite our work as follows:
-{\em Three-dimensional visualisation performed with the {\tt S2PLOT} programming 
-library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).}
+{\em Three-dimensional visualisation performed with the {\sc s2plot} programming 
+library (Barnes et al. 2006), using {\sc s2involve} (Fluke \& Barnes, {\em in prep}).}
 
 Additional references may be made to our original description of the 3D-PDF approach
 for astronomy publications (Barnes \& Fluke 2008) and the free, open-source solution 
@@ -126,5 +126,76 @@ Barnes, D.G., Vidiassov, M., Ruthensteiner, B., Fluke, C.J., Quayley, M., McHenr
 Fluke, C.J., Barnes, D.G., 2014, in preparation
 
 \end{thebibliography}
+
+\newpage
+\appendix
+\section*{Instructions}
+section*{Instructions}
+PRC files exported from S2PLOT (\url{http://astronomy.swin.edu.au/s2plot},
+version 3.2 or higher) can be embedded as interactive 3-d figures in PDF documents
+prepared with {\sc pdflatex}.
+
+
+All components required for recreating this PDF document are in the DIR$-$OBJNAME
+directory.  Running the {\sc generatepdf.csh} script again will remove any files, including
+those you may already have edited.
+
+\subsection*{Setting a default view}
+To select the default view that will appear when your interactive figure is viewed
+with Adobe Reader (version 8.0 or higher):
+\begin{enumerate}
+\item You will need to change into the DIR$-$OBJNAME directory to edit files and
+run {\tt pdflatex}.
+\item Modify the camera angle, choose any specific lighting or background colour
+such that you have the desired default 3D view.
+\item Click the label ``Set default view'' in the figure caption.
+\item In the pop-up window that opens, you will see text something like:\\
+
+\begin{verbatim}
+VIEW%={<insert descriptive name here (optional)>}
+  C2C=0 0 1
+  ROO=4.949749973032196
+  BGCOLOR=0.000000 0.000000 0.000000
+  LIGHTS=CAD
+  RENDERMODE=Solid
+END
+\end{verbatim}
+
+\item Copy this text (you may omit any {\tt PART} descriptions - but be sure that
+your {\tt VIEW} has an {\tt END}) and paste it into the file {\tt s2views.txt}.
+Provide a useful descriptive name, e.g. {\tt Default}, remembering to remove the \%
+after {\tt VIEW}.  You can refer to the {\tt S2PLOT} standard views for further
+examples of the correct format.
+
+\item Exit Adobe Reader.
+
+\item Execute the command:
+\begin{verbatim}
+% pdflatex OBJNAME.tex
+\end{verbatim}
+to update the interactive figure.
+\end{enumerate}
+
+When you now view with Adobe Reader, the first view in this {\tt s2views.txt} file
+will be the default configuration when the figure opens. Click on the
+interactive figure to access the 3D menu, and then you can select this, and
+other views, from the Views menu.
+
+Once you have finished modifying your views, remember to delete or comment out
+the caption line
+\begin{verbatim}
+\movieref[3Dgetview]{fig:OBJNAME}{Set default view}
+\end{verbatim}
+and then execute the command:
+\begin{verbatim}
+% pdflatex OBJNAME.tex
+\end{verbatim}
+to update the interactive figure.
+
+{\bf Caution:} Any changes you make to the OBJNAME.tex or {\tt s2views.txt}
+files will be lost if you re-run {\tt generatepdf.csh OBJNAME}.
+
+
+
 
 \end{document}

@@ -58,7 +58,7 @@
   ]{WIDTH\linewidth}{HEIGHT\linewidth}{s2direct.prc}\\
 \end{center}
 \caption{OBJNAME. Three-dimensional visualisation performed with the 
-{\tt S2PLOT} programming library (Barnes et al. 2006), using {\tt s2fits} 
+{\sc S2PLOT} programming library (Barnes et al. 2006), using {\sc s2involve} 
 (Fluke \& Barnes, {\em in prep}).  This is an interactive figure that you can 
 view with Adobe Reader (Version 8.0 or higher).
 \movieref[3Dgetview]{fig:OBJNAME}{Set default view}
@@ -70,8 +70,8 @@ view with Adobe Reader (Version 8.0 or higher).
 \includegraphics[width=WIDTH\linewidth,height=HEIGHT\linewidth,angle=0]{{OBJNAME-poster}.png}
 \includegraphics[width=CHGHT\linewidth,height=CWDTH\linewidth,angle=0]{{OBJNAME-cbar}.png}
 \end{center}
-\caption{OBJNAME. Three-dimensional visualisation performed with the {\tt S2PLOT}
-programming library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).}
+\caption{OBJNAME. Three-dimensional visualisation performed with the {\sc S2PLOT}
+programming library (Barnes et al. 2006), using {\sc s2involve} (Fluke \& Barnes, {\em in prep}).}
 \end{figure}
 
 
@@ -79,11 +79,11 @@ programming library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {
 \section*{Instructions}
 PRC files exported from S2PLOT (\url{http://astronomy.swin.edu.au/s2plot}, 
 version 3.2 or higher) can be embedded as interactive 3-d figures in PDF documents 
-prepared with {\tt pdflatex}.  
+prepared with {\sc pdflatex}.  
 
 
 All components required for recreating this PDF document are in the DIR\-OBJNAME
-directory.  Running the {\tt package.csh} script again will remove any files, including
+directory.  Running the {\sc generatepdf.csh} script again will remove any files, including
 those you may already have edited. 
 
 \subsection*{Setting a default view}
@@ -139,14 +139,14 @@ and then execute the command:
 to update the interactive figure.
  
 {\bf Caution:} Any changes you make to the OBJNAME.tex or {\tt s2views.txt} 
-files will be lost if you re-run {\tt package.csh OBJNAME}.
+files will be lost if you re-run {\tt generatepdf.csh OBJNAME}.
 
 
 \section*{Credits}
 If you find this approach to visualising spectral data cubes to be useful, 
 it would be greatly appreciated if you can cite our work as follows:
 {\em Three-dimensional visualisation performed with the {\tt S2PLOT} programming 
-library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).}
+library (Barnes et al. 2006), using {\sc s2involve} (Fluke \& Barnes, {\em in prep}).}
 
 Additional references may be made to our original description of the 3D-PDF approach
 for astronomy publications (Barnes \& Fluke 2008) and the free, open-source solution 
