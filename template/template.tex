@@ -1,0 +1,171 @@
+%% template.tex
+ %
+ % Copyright 2006-2012 David G. Barnes, Paul Bourke, Christopher Fluke
+ %
+ % This file is part of S2PLOT.
+ %
+ % S2PLOT is free software: you can redistribute it and/or modify it
+ % under the terms of the GNU General Public License as published by
+ % the Free Software Foundation, either version 3 of the License, or
+ % (at your option) any later version.
+ %
+ % S2PLOT is distributed in the hope that it will be useful, but
+ % WITHOUT ANY WARRANTY; without even the implied warranty of
+ % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ % General Public License for more details.
+ %
+ % You should have received a copy of the GNU General Public License
+ % along with S2PLOT.  If not, see <http://www.gnu.org/licenses/>. 
+ %
+ % We would appreciate it if research outcomes using S2PLOT would
+ % provide the following acknowledgement:
+ %
+ % "Three-dimensional visualisation was conducted with the S2PLOT
+ % progamming library"
+ %
+ % and a reference to
+ %
+ % D.G.Barnes, C.J.Fluke, P.D.Bourke & O.T.Parry, 2006, Publications
+ % of the Astronomical Society of Australia, 23(2), 82-93.
+ %
+ % $Id: s2direct.tex,v 1.7 2011/05/19 00:50:36 dbarnes Exp $
+ %
+
+\documentclass{article}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[3D]{movie15}
+\parindent=0pt
+\parskip=1.2\baselineskip
+
+\begin{document}
+
+\begin{figure}
+\begin{center}
+  \vspace{0.12in}
+  \includemovie[label=fig:OBJNAME,
+    poster=OBJNAME-poster.png,
+    3Dcoo=0.007216811180114746 -0.04447293281555176 -0.0332721471786499,
+    3Droo=6.881564140319824,
+    3Dviews2=s2views.txt,
+    3Djscript=s2plot-prc.js,
+    controls,
+    3Dlights=CAD,
+    3Dbg=0 0 0,
+    autoplay,
+    3Drender=Solid,
+  ]{WIDTH\linewidth}{HEIGHT\linewidth}{s2direct.prc}\\
+\end{center}
+\caption{OBJNAME. Three-dimensional visualisation performed with the 
+{\tt S2PLOT} programming library (Barnes et al. 2006), using {\tt s2fits} 
+(Fluke \& Barnes, {\em in prep}).  This is an interactive figure that you can 
+view with Adobe Reader (Version 8.0 or higher).
+\movieref[3Dgetview]{fig:OBJNAME}{Set default view}
+}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=WIDTH\linewidth,height=HEIGHT\linewidth,angle=0]{{OBJNAME-poster}.png}
+\includegraphics[width=CHGHT\linewidth,height=CWDTH\linewidth,angle=0]{{OBJNAME-cbar}.png}
+\end{center}
+\caption{OBJNAME. Three-dimensional visualisation performed with the {\tt S2PLOT}
+programming library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).}
+\end{figure}
+
+
+\newpage
+\section*{Instructions}
+PRC files exported from S2PLOT (\url{http://astronomy.swin.edu.au/s2plot}, 
+version 3.2 or higher) can be embedded as interactive 3-d figures in PDF documents 
+prepared with {\tt pdflatex}.  
+
+
+All components required for recreating this PDF document are in the DIR\-OBJNAME
+directory.  Running the {\tt package.csh} script again will remove any files, including
+those you may already have edited. 
+
+\subsection*{Setting a default view}
+To select the default view that will appear when your interactive figure is viewed
+with Adobe Reader (version 8.0 or higher):
+\begin{enumerate}
+\item You will need to change into the DIR\-OBJNAME directory to edit files and
+run {\tt pdflatex}.
+\item Modify the camera angle, choose any specific lighting or background colour 
+such that you have the desired default 3D view. 
+\item Click the label ``Set default view'' in the figure caption.
+\item In the pop-up window that opens, you will see text something like:\\
+
+\begin{verbatim}
+VIEW%={<insert descriptive name here (optional)>}
+  C2C=0 0 1
+  ROO=4.949749973032196
+  BGCOLOR=0.000000 0.000000 0.000000
+  LIGHTS=CAD
+  RENDERMODE=Solid
+END
+\end{verbatim}
+
+\item Copy this text (you may omit any {\tt PART} descriptions - but be sure that 
+your {\tt VIEW} has an {\tt END}) and paste it into the file {\tt s2views.txt}.  
+Provide a useful descriptive name, e.g. {\tt Default}, remembering to remove the \% 
+after {\tt VIEW}.  You can refer to the {\tt S2PLOT} standard views for further
+examples of the correct format. 
+
+\item Exit Adobe Reader.
+
+\item Execute the command:
+\begin{verbatim}
+% pdflatex OBJNAME.tex
+\end{verbatim}
+to update the interactive figure.
+\end{enumerate}
+
+When you now view with Adobe Reader, the first view in this {\tt s2views.txt} file
+will be the default configuration when the figure opens. Click on the
+interactive figure to access the 3D menu, and then you can select this, and
+other views, from the Views menu.
+
+Once you have finished modifying your views, remember to delete or comment out
+the caption line 
+\begin{verbatim}
+\movieref[3Dgetview]{fig:OBJNAME}{Set default view}
+\end{verbatim}
+and then execute the command:
+\begin{verbatim}
+% pdflatex OBJNAME.tex
+\end{verbatim}
+to update the interactive figure.
+ 
+{\bf Caution:} Any changes you make to the OBJNAME.tex or {\tt s2views.txt} 
+files will be lost if you re-run {\tt package.csh OBJNAME}.
+
+
+\section*{Credits}
+If you find this approach to visualising spectral data cubes to be useful, 
+it would be greatly appreciated if you can cite our work as follows:
+{\em Three-dimensional visualisation performed with the {\tt S2PLOT} programming 
+library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).}
+
+Additional references may be made to our original description of the 3D-PDF approach
+for astronomy publications (Barnes \& Fluke 2008) and the free, open-source solution 
+using the PRC format in \LaTeX (Barnes et al. 2013). 
+
+
+\begin{thebibliography}{99}
+\bibitem[Barnes et al. (2006)]{Barnes06}
+Barnes, D.G., Fluke, C.J., Bourke, P.D., Parry, O.T., 2006, PASA, 23, 82
+
+\bibitem[Barnes \& Fluke (2008)]{Barnes08}
+Barnes, D.G., Fluke, C.J., 2008, New Astronomy, 13, 599 
+
+\bibitem[Barnes et al. (2013)]{Barnes13}
+Barnes, D.G., Vidiassov, M., Ruthensteiner, B., Fluke, C.J., Quayley, M., McHenry, C.R., 2013, PLoS ONE, 8, e69446
+
+\bibitem[Fluke \& Barnes ({\em in prep})]{Fluke14}
+Fluke, C.J., Barnes, D.G., 2014, in preparation
+
+\end{thebibliography}
+
+\end{document}

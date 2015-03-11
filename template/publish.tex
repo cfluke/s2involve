@@ -1,0 +1,130 @@
+%% template.tex
+ %
+ % Copyright 2006-2012 David G. Barnes, Paul Bourke, Christopher Fluke
+ %
+ % This file is part of S2PLOT.
+ %
+ % S2PLOT is free software: you can redistribute it and/or modify it
+ % under the terms of the GNU General Public License as published by
+ % the Free Software Foundation, either version 3 of the License, or
+ % (at your option) any later version.
+ %
+ % S2PLOT is distributed in the hope that it will be useful, but
+ % WITHOUT ANY WARRANTY; without even the implied warranty of
+ % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ % General Public License for more details.
+ %
+ % You should have received a copy of the GNU General Public License
+ % along with S2PLOT.  If not, see <http://www.gnu.org/licenses/>. 
+ %
+ % We would appreciate it if research outcomes using S2PLOT would
+ % provide the following acknowledgement:
+ %
+ % "Three-dimensional visualisation was conducted with the S2PLOT
+ % progamming library"
+ %
+ % and a reference to
+ %
+ % D.G.Barnes, C.J.Fluke, P.D.Bourke & O.T.Parry, 2006, Publications
+ % of the Astronomical Society of Australia, 23(2), 82-93.
+ %
+ % $Id: s2direct.tex,v 1.7 2011/05/19 00:50:36 dbarnes Exp $
+ %
+
+\documentclass{article}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[3D]{movie15}
+\parindent=0pt
+\parskip=1.2\baselineskip
+
+\begin{document}
+
+\begin{figure}
+\begin{center}
+  \vspace{0.12in}
+  \includemovie[label=fig:OBJNAME,
+    poster=OBJNAME-poster.png,
+    3Dcoo=0.007216811180114746 -0.04447293281555176 -0.0332721471786499,
+    3Droo=6.881564140319824,
+    3Dviews2=s2views.txt,
+    3Djscript=s2plot-prc.js,
+    controls,
+    3Dlights=CAD,
+    3Dbg=0 0 0,
+    autoplay,
+    3Drender=Solid,
+  ]{WIDTH\linewidth}{HEIGHT\linewidth}{s2direct.prc}\\
+\vspace{0.3cm}
+\includegraphics[width=CWDTH\linewidth,height=CHGHT\linewidth,angle=0]{{OBJNAME-cbar}.png}
+\end{center}
+\caption{OBJNAME. Three-dimensional visualisation performed with the 
+{\tt S2PLOT} programming library (Barnes et al. 2006), using {\tt s2fits} 
+(Fluke \& Barnes, {\em in prep}).  (Upper panel) This is an interactive 
+figure for viewing with Adobe Reader (Version 8.0 or higher).  
+(Lower panel) Histogram of $\log_{10}({\rm Intensity})$, scaled to maximum bin value in 
+arbitrary units. Data range (top row of numbers) and plotted data range (bottom row of numbers) are 
+shown in the image.  Additional data is contained in Table \ref{tbl:meta}. The black `T' shows the 
+histogram mean and one standard deviation limits. }
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=WIDTH\linewidth,height=HEIGHT\linewidth,angle=0]{{OBJNAME-poster}.png}
+
+\vspace{0.3cm}
+
+\includegraphics[width=CWDTH\linewidth,height=CHGHT\linewidth,angle=0]{{OBJNAME-cbar}.png}
+\end{center}
+\caption{OBJNAME. Three-dimensional visualisation performed with the {\tt S2PLOT}
+programming library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).  (Upper panel) Printable image of spectral data cube using 3D texture volume rendering. 
+(Lower panel) Histogram of $\log_{10}({\rm Intensity})$, scaled to maximum bin value in 
+arbitrary units. Data range (top row of numbers) and plotted data range (bottom row of numbers) are 
+shown in the image.  Additional data is contained in Table \ref{tbl:meta}. The black `T' shows the 
+histogram mean and one standard deviation limits. }
+\end{figure}
+
+
+\section{Metadata}
+
+\begin{table}[h]
+\caption{{OBJNAME} meta data from {\tt s2fits}.}
+\label{tbl:meta}
+\begin{center}
+\begin{tabular}{lrl}
+{\bf Parameter} & {\bf Value} & {\bf Description}\\
+\hline 
+\input{OBJNAME-meta.txt}
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\section*{Credits}
+If you find this approach to visualising spectral data cubes to be useful, 
+it would be greatly appreciated if you can cite our work as follows:
+{\em Three-dimensional visualisation performed with the {\tt S2PLOT} programming 
+library (Barnes et al. 2006), using {\tt s2fits} (Fluke \& Barnes, {\em in prep}).}
+
+Additional references may be made to our original description of the 3D-PDF approach
+for astronomy publications (Barnes \& Fluke 2008) and the free, open-source solution 
+using the PRC format in \LaTeX (Barnes et al. 2013). 
+
+
+\begin{thebibliography}{99}
+\bibitem[Barnes et al. (2006)]{Barnes06}
+Barnes, D.G., Fluke, C.J., Bourke, P.D., Parry, O.T., 2006, PASA, 23, 82
+
+\bibitem[Barnes \& Fluke (2008)]{Barnes08}
+Barnes, D.G., Fluke, C.J., 2008, New Astronomy, 13, 599 
+
+\bibitem[Barnes et al. (2013)]{Barnes13}
+Barnes, D.G., Vidiassov, M., Ruthensteiner, B., Fluke, C.J., Quayley, M., McHenry, C.R., 2013, PLoS ONE, 8, e69446
+
+\bibitem[Fluke \& Barnes, {\em in prep}]{Fluke14}
+Fluke, C.J., Barnes, D.G., 2014, in preparation
+
+\end{thebibliography}
+
+\end{document}
