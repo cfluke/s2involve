@@ -23,30 +23,6 @@
 set template=./template
 set publish=./publish
 
-set oname = `echo $1 | tr '_' '-'`
-echo Creating 3D-PDF for object: $oname
-
-
-chmod 755 packagehead.csh
-foreach line ("`cat packagehead.csh`")
-  set argv = ($line)
-  set fname=$1
-  set histo=$2
-end
-
-set res=`file $fname.tga`
-set split = ($res:as/ / /)
-set len = $#split
-
-@ hidx = $len
-@ widx = $len - 2
-@ height = $split[$hidx]
-
-set width = `echo "$split[$widx]/2" | bc`
-
-set w1 = `echo "$width-10" | bc`
-set o1 = `echo "$width+5" | bc`
-
 if ($1 == '') then
    echo 'Usage: makemypdf.csh <object name>'
 
@@ -73,6 +49,10 @@ if ($1 == '') then
 endif
 
 
+set oname = `echo $1 | tr '_' '-'`
+echo Creating 3D-PDF for object: $oname
+
+
 set dname = DIR-$oname
 set pname = $oname\-poster
 set cname = $oname\-cbar
@@ -87,14 +67,52 @@ cp ${template}/s2plot-prc.js $dname
 cp s2plotprc.pdf $dname
 cp s2direct.prc $dname
 cp s2direct.map $dname
+
+
+# Now find out details of the initial poster image from s2involve and split it up 
+
+chmod 755 packagehead.csh
+foreach line ("`cat packagehead.csh`")
+  set argv = ($line)
+  set fname=$1
+  set histo=$2
+end
+
 cp ${fname} $dname/$oname-meta.txt
 
-set height1=`echo "(${histo}*${height})/1" |bc`
-set height2=`echo "${height}-${height1}" |bc`
-set cst1 = "${w1}x${height2}+${o1}+0"
-set cst2 = "${w1}x${height1}+${o1}+${height2}"
-convert -crop ${cst1} ${fname}.tga $dname/$pname.png
-convert -crop ${cst2} ${fname}.tga $dname/$cname.png
+set res=`file $fname.tga`
+set split = ($res:as/ / /)
+set len = $#split
+
+# Index of height and width values from the split "file" command
+@ hidx = $len
+@ widx = $len - 2
+
+@ height = $split[$hidx]
+@ width = `echo "$split[$widx]/2" | bc`
+@ frame = 3
+
+set w1 = `echo "$width-2*$frame" | bc`
+set h1 = `echo "((1-2*$histo)*$height-2*$frame)/1" | bc`
+set h2 = `echo "($histo*$height-$frame/2)/1" | bc`
+
+set o1 = `echo "$width+$frame" | bc`
+set o2 = `echo "($histo*$height+$frame)/1" | bc`
+set o3 = `echo "((1-$histo)*$height+1)/1" | bc`
+
+echo $o1 $o2 $o3
+
+set crop1 = "${w1}x${h1}+${o1}+${o2}"
+set crop2 = "${w1}x${h2}+${o1}+${o3}"
+convert -crop ${crop1} ${fname}.tga $dname/$pname.png
+convert -crop ${crop2} ${fname}.tga $dname/$cname.png
+
+#set height1=`echo "(${histo}*${height})/1" |bc`
+#set height2=`echo "${height}-${height1}" |bc`
+#set cst1 = "${w1}x${height2}+${o1}+0"
+#set cst2 = "${w1}x${height1}+${o1}+${height2}"
+#convert -crop ${cst1} ${fname}.tga $dname/$pname.png
+#convert -crop ${cst2} ${fname}.tga $dname/$cname.png
 
 cd $dname
 

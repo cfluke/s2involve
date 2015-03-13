@@ -68,6 +68,10 @@ typedef struct {
 typedef struct {
    long Naxis;					/* NAXIS */
    long naxis[4];				/* NAXISn: n=1..4 */
+   float crval[3];				/* CRVALn: n=1..3 */
+   float cdelt[3];				/* CDELTn: n=1..3 */
+   float crpix[3];				/* CRPIXn: n=1..3 */
+   
 #ifdef NOTNOW
    char object[128];				/* OBJECT */
    float bscale;				/* BSCALE */
@@ -178,7 +182,7 @@ Panel initPanel(int cubeID, int ctype, int i, int j, int Nx, int Ny, int Nbin)
    xs2cp(p.pid);
    xs2lpc(0, p.pid);
    s2swin(0,1,0,1,0,1);
-   COLOUR active = { 0,0,0 };
+   COLOUR active = { 1,0,0 };
    COLOUR inactive = { 0.0,0.0,0.0 };
    xs2spp(active, inactive, 2);
 
@@ -703,6 +707,11 @@ void plotHistogram(Histogram h, DataValues dv, VisParameters vp)
    col.r = col.g = col.b = 1.0;
    ns2vf4(P, col);
 
+   P[0].y = P[1].y = 1.0-(ybase+1.20*yheight);
+   P[2].y = P[3].y = 1.0;
+   ns2vf4(P, col);
+
+
 /*
    ns2thline(P[0].x,P[0].y,P[0].z, P[1].x,P[0].y,P[0].z, 1,1,0, 2);
 */
@@ -718,7 +727,8 @@ void plotHistogram(Histogram h, DataValues dv, VisParameters vp)
 
    char string[32];
    float pad = 1.0;
-   s2sch(1.0);
+   s2slw(2);
+   s2sch(1.4);
    float xx1, xx2, yy1, yy2, dyy, dxx;
    s2sci(S2_PG_BLACK);
 
@@ -793,9 +803,91 @@ int kcb(unsigned char *key)
    return 0;
 }
 
-void labelaxes(Panel p)
+void labelaxes(Panel p, Header h, int flag)
 {
+   s2slw(1);
+   s2sci(S2_PG_WHITE);
+   s2sch(2);
+
+   s2sch(2.0);
+   pushVRMLname("BOX");
+   s2box("BCDE",0,0,"BCDE",0,0,"BCDE",0,0);
+
+   pushVRMLname("AXES");
+   s2box("BCOQ",0,0,"BDOQ",0,0,"BCDOQ",0,0);
+   s2sch(2.01);
+
+   s2sci(S2_PG_WHITE);
    s2lab(p.labels.axis[0], p.labels.axis[1], p.labels.axis[2], "");
+   s2sci(S2_PG_LTGREY);
+
+
+/* X-axis */
+   float t[3];
+   t[0] = (5.0/60.0);			/* 5 arcsec */
+   t[1] = (5.0/60.0);			/* 5 arcsec */
+   t[2] = 50000;			/* 10 units */
+
+   float dp[3];
+   int i;
+   for (i=0;i<3;i++) { dp[i] = fabs(h.cdelt[i]*t[i]); }
+
+   if (flag == TEXPDF) {
+      pushVRMLname("GRID");
+    
+      int t = 2;
+      for (i=0;i<=t;i++) {
+         s2wcube(h.crpix[0]-i*dp[0],h.crpix[0]+i*dp[0],0,1,0,1);			/* X-origin */
+         s2wcube(0,1, h.crpix[1]-i*dp[1],h.crpix[1]+i*dp[1],0,1);			/* Y-origin */
+         s2wcube(0,1, 0,1, h.crpix[2]-i*dp[2],h.crpix[2]+i*dp[2]);			/* Z-origin */
+      }
+
+#ifdef OLD
+      s2wcube(h.crpix[0],h.crpix[0],0,1,0,1);			/* X-origin */
+      s2wcube(h.crpix[0]-dp[0],h.crpix[0]+dp[0],0,1,0,1);	/* X-grid lines */
+      s2wcube(h.crpix[0]-2*dp[0],h.crpix[0]+2*dp[0],0,1,0,1);	/* X-grid lines */
+
+      s2wcube(0,1,h.crpix[1]-dp[1],h.crpix[1]+dp[1],0,1);	/* Y-grid lines */
+      s2wcube(0,1,h.crpix[1]-2*dp[1],h.crpix[1]+2*dp[1],0,1);	/* Y-grid lines */
+
+      s2wcube(0,1,0,1,h.crpix[2]-dp[2],h.crpix[2]+dp[2]);	/* Z-grid lines */
+      s2wcube(0,1,0,1,h.crpix[2]-2*dp[2],h.crpix[2]+2*dp[2]);	/* Z-grid lines */
+#endif
+   } 
+
+/* Draw the tick marks */
+   pushVRMLname("TICKS");
+   float ts = 0.05, tz = 0.10;
+
+   ns2line(h.crpix[0],0,0, h.crpix[0],0+ts,0, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],1,0, h.crpix[0],1-ts,0, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],0,1, h.crpix[0],0+ts,1, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],1,1, h.crpix[0],1-ts,1, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],0,0, h.crpix[0],0,0+tz, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],0,1, h.crpix[0],0,1-tz, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],1,0, h.crpix[0],1,0+tz, 1,1,1);			/* X-origin */
+   ns2line(h.crpix[0],1,1, h.crpix[0],1,1-tz, 1,1,1);			/* X-origin */
+
+   ns2line(0,h.crpix[1],0, 0,h.crpix[1],0+tz, 1,1,1);			/* Y-origin */
+   ns2line(0,h.crpix[1],1, 0,h.crpix[1],1-tz, 1,1,1);			/* Y-origin */
+   ns2line(1,h.crpix[1],0, 1,h.crpix[1],0+tz, 1,1,1);			/* Y-origin */
+   ns2line(1,h.crpix[1],1, 1,h.crpix[1],1-tz, 1,1,1);			/* Y-origin */
+   ns2line(0,h.crpix[1],0, 0+ts,h.crpix[1],0, 1,1,1);			/* Y-origin */
+   ns2line(1,h.crpix[1],0, 1-ts,h.crpix[1],0, 1,1,1);			/* Y-origin */
+   ns2line(0,h.crpix[1],1, 0+ts,h.crpix[1],1, 1,1,1);			/* Y-origin */
+   ns2line(1,h.crpix[1],1, 1-ts,h.crpix[1],1, 1,1,1);			/* Y-origin */
+
+/* CJF: NEED TO ADJUST BY SCALE FACTOR */
+   ns2line(0,0, h.crpix[2], 0,0+ts,h.crpix[2], 1,1,1);			/* Z-origin */
+   ns2line(0,1, h.crpix[2], 0,1-ts,h.crpix[2], 1,1,1);			/* Z-origin */
+   ns2line(1,0, h.crpix[2], 1,0+ts,h.crpix[2], 1,1,1);			/* Z-origin */
+   ns2line(1,1, h.crpix[2], 1,1-ts,h.crpix[2], 1,1,1);			/* Z-origin */
+
+   ns2line(0,0, h.crpix[2], 0+ts,0,h.crpix[2], 1,1,1);			/* Z-origin */
+   ns2line(1,0, h.crpix[2], 1-ts,0,h.crpix[2], 1,1,1);			/* Z-origin */
+   ns2line(0,1, h.crpix[2], 0+ts,1,h.crpix[2], 1,1,1);			/* Z-origin */
+   ns2line(1,1, h.crpix[2], 1-ts,1,h.crpix[2], 1,1,1);			/* Z-origin */
+
 }
 
 
@@ -807,17 +899,9 @@ void cb(double *t, int *kc, int *value)
 
 /* Reset coordinates of current window and set default drawing colour */
    s2swin(0,1,0,1,0,1);
-   s2sci(S2_PG_WHITE);
 
-   s2sch(2);
-   pushVRMLname("ANON");
-   s2box("BCDE",0,0,"BCDE",0,0,"BCDE",0,0);
-
-   pushVRMLname("AXES");
-   s2box("BCOQ",0,0,"BDOQ",0,0,"BCDOQ",0,0);
-   s2sch(2.01);
-  
-   labelaxes(config.panel[col][row]);
+   labelaxes(config.panel[col][row], config.header[config.panel[col][row].cubeID], 
+		config.panel[col][row].ctype);
 
 /* Determine the type of texture object to display */
    if (config.panel[col][row].ctype == TEX3D) { 
@@ -965,6 +1049,12 @@ Header initHeader(void)
    h.Naxis = 0;
    int i;
    for (i=0;i<4;i++) { h.naxis[i] = 0; }
+   for (i=0;i<3;i++) {
+      h.crval[i] = 0;
+      h.cdelt[i] = 0;
+      h.crpix[i] = 0;
+   }
+
 #ifdef NOTNOW
    h.bscale = 1.0;
    h.bzero  = 0.0;
@@ -1043,6 +1133,24 @@ Header parseHeader(char *headerfile)
          exit(EXITERROR);
       }
    }
+  
+/* Read the reference pixels and offsets */
+   for (i=0;i<3;i++) {
+      sprintf(nstring,"CRVAL%d",i+1);
+      h.crval[i] = keyword2float(nstring,keywords,Nkey);		/* Units */
+      sprintf(nstring,"CDELT%d",i+1);
+      h.cdelt[i] = keyword2float(nstring,keywords,Nkey);		/* Units */
+      sprintf(nstring,"CRPIX%d",i+1);
+      h.crpix[i] = keyword2float(nstring,keywords,Nkey);		/* Pixel number */
+
+/* Will be mapped to [0..1] in the callback */
+      float dd = 1.0/(float)h.naxis[i];
+
+      h.cdelt[i] = dd/h.cdelt[i];
+      h.crpix[i] = (h.crpix[i]+0.5)*dd;
+ 
+   }
+
    
 #ifdef NOTNOW
    h.bscale = keyword2float("BSCALE",keywords,Nkey);
@@ -1374,6 +1482,7 @@ int main(int argc, char *argv[])
 
 /* Draw and label a box: required to get camera locations right */
    s2swin(-1,1,-1,1,-1,1);
+   pushVRMLname("BOX");
    s2box("BCDE",0,0,"BCDE",0,0,"BCDE",0,0);
 
 /* Set up the S2PLOT lights for volume rendering */
