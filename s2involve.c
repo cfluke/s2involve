@@ -618,7 +618,16 @@ void textureVolumeRender(unsigned int texid, long Naxis[3])
 
 void plotHistogram(Histogram h, DataValues dv, VisParameters vp)
 {
+   static unsigned int *gtid;          /* 0..9.- */
+   static float gasp = -1.0;
+
+   if (gasp < 0) {
+      gtid = getDigitTextures("digits2.tga", NDIGIT, &gasp);
+   }
+
    ss2tsc("clr");
+
+
    float z = 0.001, ybase = 0.02, yheight = 0.06; 
    float x1 = 0.10, x2 = 0.90, dx = x2 - x1;
 
@@ -703,7 +712,7 @@ void plotHistogram(Histogram h, DataValues dv, VisParameters vp)
    P[1].x = P[2].x = 1.0;
    P[0].y = P[1].y = ybase+1.20*yheight;
    P[2].y = P[3].y = 0.0;
-   P[0].z = P[1].z = P[2].z = P[3].z = 0.005;
+   P[0].z = P[1].z = P[2].z = P[3].z = 0.02;
    col.r = col.g = col.b = 1.0;
    ns2vf4(P, col);
 
@@ -733,38 +742,68 @@ void plotHistogram(Histogram h, DataValues dv, VisParameters vp)
    s2sci(S2_PG_BLACK);
 
 /* Write label for overall data minimum */
+#ifdef NOT
    sprintf(string,"%.2f",h.dmin*h.scale);	/* CJF: Need scale factor */
    s2qtxtxy(&xx1,&xx2,&yy1,&yy2, 0,0,0, string, pad);
    dyy = yy2-yy1;
    dxx = xx2-xx1;
    s2textxy(x1-1.15*dxx,ybase+0.5*dyy,z,string);
+#endif
+
+/* CJF: Need Scale factor */
+   XYZ xyz = { 0.0, ybase+1.2*yheight, 0.01 };
+   float width = 0.017;
+   float ar = ss2qar();
+   num2tid(h.dmin*h.scale, 2, gtid, gasp*ar, xyz, width, ALEFT, ATOP);
 
 /* Write label for overall data maximum */
+#ifdef NOT
    sprintf(string,"%.2f",h.dmax*h.scale);	/* CJF: Need scale factor */
    s2qtxtxy(&xx1,&xx2,&yy1,&yy2, 0,0,0, string, pad);
    dyy = yy2-yy1;
    dxx = xx2-xx1;
    s2textxy(x2+0.15*dxx,ybase+0.5*dyy,z,string);
+#endif
+
+   xyz.x = 1.0;
+   num2tid(h.dmax*h.scale, 2, gtid, gasp*ar, xyz, width, ARIGHT, ATOP);
 
 /* Write label for plotted data minimum */
+#ifdef NOT
    sprintf(string,"%.2f",vp.dmin*h.scale);	/* CJF: Need scale factor */
    s2qtxtxy(&xx1,&xx2,&yy1,&yy2, 0,0,0, string, pad);
    dyy = yy2-yy1;
    dxx = xx2-xx1;
+#endif
    x = (vp.dmin-h.dmin)/(h.dmax-h.dmin)*dx + x1;
+#ifdef NOT
    s2textxy(x-1.10*dxx,ybase-0.5*dyy,z,string);
+#endif
+  
+   xyz.y = 0.0;
+   xyz.x = 0.0;
+   num2tid(vp.dmin*h.scale, 2, gtid, gasp*ar, xyz, width, ALEFT, ABOTTOM);
+
 /* Draw vertical line at plotted data min */
    ns2thline(x,ybase,z, x,ybase-0.01,z, 0,0,0, 1);
 
 /* Write label for plotted data maximum */
+#ifdef NOT
    sprintf(string,"%.2f",vp.dmax*h.scale);	/* CJF: Need scale factor */
    s2qtxtxy(&xx1,&xx2,&yy1,&yy2, 0,0,0, string, pad);
    dyy = yy2-yy1;
    dxx = xx2-xx1;
+#endif
    x = (vp.dmax-h.dmin)/(h.dmax-h.dmin)*dx + x1;
+#ifdef NOT
    s2textxy(x+0.15*dxx,ybase-0.5*dyy,z,string);
+#endif
 /* Draw vertical line at plotted data max */
    ns2thline(x,ybase,z, x,ybase-0.01,z, 0,0,0, 1);
+
+   xyz.y = 0.0;
+   xyz.x = 1.0;
+   num2tid(vp.dmax*h.scale, 2, gtid, gasp*ar, xyz, width, ARIGHT, ABOTTOM);
 
    ss2tsc("");
 }
@@ -842,17 +881,6 @@ void labelaxes(Panel p, Header h, int flag)
          s2wcube(0,1, 0,1, h.crpix[2]-i*dp[2],h.crpix[2]+i*dp[2]);			/* Z-origin */
       }
 
-#ifdef OLD
-      s2wcube(h.crpix[0],h.crpix[0],0,1,0,1);			/* X-origin */
-      s2wcube(h.crpix[0]-dp[0],h.crpix[0]+dp[0],0,1,0,1);	/* X-grid lines */
-      s2wcube(h.crpix[0]-2*dp[0],h.crpix[0]+2*dp[0],0,1,0,1);	/* X-grid lines */
-
-      s2wcube(0,1,h.crpix[1]-dp[1],h.crpix[1]+dp[1],0,1);	/* Y-grid lines */
-      s2wcube(0,1,h.crpix[1]-2*dp[1],h.crpix[1]+2*dp[1],0,1);	/* Y-grid lines */
-
-      s2wcube(0,1,0,1,h.crpix[2]-dp[2],h.crpix[2]+dp[2]);	/* Z-grid lines */
-      s2wcube(0,1,0,1,h.crpix[2]-2*dp[2],h.crpix[2]+2*dp[2]);	/* Z-grid lines */
-#endif
    } 
 
 /* Draw the tick marks */
@@ -877,7 +905,6 @@ void labelaxes(Panel p, Header h, int flag)
    ns2line(0,h.crpix[1],1, 0+ts,h.crpix[1],1, 1,1,1);			/* Y-origin */
    ns2line(1,h.crpix[1],1, 1-ts,h.crpix[1],1, 1,1,1);			/* Y-origin */
 
-/* CJF: NEED TO ADJUST BY SCALE FACTOR */
    ns2line(0,0, h.crpix[2], 0,0+ts,h.crpix[2], 1,1,1);			/* Z-origin */
    ns2line(0,1, h.crpix[2], 0,1-ts,h.crpix[2], 1,1,1);			/* Z-origin */
    ns2line(1,0, h.crpix[2], 1,0+ts,h.crpix[2], 1,1,1);			/* Z-origin */

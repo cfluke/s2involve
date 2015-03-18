@@ -52,6 +52,7 @@ typedef struct {
    int fx, fy, fz;
 } ScaleAxis;
 
+#define NDIGIT 12
 
 
 float ***initVolume(int nx, int ny, int nz, float val);
@@ -65,8 +66,16 @@ void extractCube(FITSCube *avg, FITSCube c, ScaleAxis sa, int mid[3], int delta[
 void averExtractCube(FITSCube *avg, FITSCube c, ScaleAxis sa, XYZ roi0, XYZ roi1);
 ScaleAxis setTarget(int target, long naxes[3]);
 
+unsigned int *getDigitTextures(char *fname, int ndigit, float *asp);
+void num2tid(float number, int dec, unsigned int *tid, float asp, XYZ xyz,
+                        float width, int lr, int bt);
 
 
 
+
+#define ALEFT 1
+#define ARIGHT 2
+#define ATOP 3
+#define ABOTTOM 4
 
 #endif

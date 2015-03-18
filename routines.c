@@ -667,3 +667,116 @@ ScaleAxis setTarget(int target, long naxes[3])
 
 }
 
+
+
+void num2tid(float number, int dec, unsigned int *tid, float asp, XYZ xyz, 
+			float height, int lr, int bt)
+{
+
+   char fmt[12];
+   char string[32];
+   sprintf(fmt, "%%.%df",dec);
+   sprintf(string,fmt,number);
+
+   int len = strlen(string);
+/*
+   width = width/(float)len;
+*/
+
+   float y0 = xyz.y, yh = height;   /* xw*asp; */
+   float x0 = xyz.x, xw = yh/asp;
+   float z0 = xyz.z;
+
+ 
+   if (lr == ARIGHT) {
+      x0 = x0-len*xw;
+   }
+
+   if (bt == ATOP) {
+      y0 = y0-yh;
+   }
+
+   XYZ P[4];
+   COLOUR col = { 1,1,1 };
+   P[0].x = P[3].x = x0;
+   P[1].x = P[2].x = x0+xw;
+   P[0].y = P[1].y = y0+yh;
+   P[2].y = P[3].y = y0;
+   P[0].z = P[1].z = P[2].z = P[3].z = z0;
+
+   int i;
+   int idx = 0;
+   for (i=0;i<len;i++) {
+      if (string[i] == '-') idx = 11;
+      else if (string[i] == '.') idx = 10;
+      else idx = string[i]-'0';
+      ns2vf4x(P, col, tid[idx], 1.0, 'o');
+   
+      P[0].x = P[3].x = P[0].x + xw;
+      P[1].x = P[2].x = P[1].x + xw;
+   }
+
+}
+
+unsigned int *getDigitTextures(char *fname, int ndigit, float *asp)
+{
+   unsigned int *tid = (unsigned int *)calloc(ndigit, sizeof(unsigned int));
+
+   int w, h;
+   unsigned int digits = ss2lt(fname);
+   unsigned char *tex = ss2gt(digits, &w, &h);
+   *asp = (float)h/(float)w;
+
+   int i;
+   int ww = (int)((float)w/(float)NDIGIT);
+   long idx=0,lidx=0;
+   int j, k;
+   unsigned char *buf;
+   long first, offset;
+
+   for (i=0;i<ndigit;i++) {
+      tid[i] = ss2ct(ww,h);		/* Create new texture */
+      buf = ss2gt(tid[i], NULL, NULL);	/* Get the texture buffer */
+
+      first  = i*ww;			/* Offset to this digit */
+      lidx   = 0;			/* Index within texture buffer */
+      for (j=0;j<h;j++) {
+         offset = j*w + first;		
+         for (k=0;k<ww;k++) {
+	    idx = (offset + k)*4;  
+            buf[lidx  ] = tex[idx];
+            buf[lidx+1] = tex[idx+1];
+            buf[lidx+2] = tex[idx+2];
+	    lidx+=4;
+         }
+      }
+      ss2pt(tid[i]);			/* Push back the buffer ready for use */
+   }
+
+   *asp *= ndigit;
+   return tid;
+}
+
+/*
+int mmain(int argc, char *argv[])
+{
+   s2opend("/?",argc,argv);
+   s2swin(0,1,0,1,0,1);
+   s2box("BCDE",0,0,"BCDE",0,0,"BCDE",0,0);
+
+   unsigned int *gtid;		
+   float gasp;
+   gtid = getDigitTextures("digits2.tga", NDIGIT, &gasp);
+   float number = M_PI; 
+   XYZ xyz = { 0.0, 0.0, 0.05 };
+   float width = 0.3;
+   ss2tsc("clr");
+   float ar = ss2qar();
+   num2tid(number,5, gtid, gasp*ar, xyz, width);
+
+   ss2spt(ORTHOGRAPHIC);
+   ss2srm(SHADE_FLAT);
+   s2show(1);
+   return 1;
+}
+*/

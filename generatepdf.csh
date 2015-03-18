@@ -60,7 +60,7 @@ set cname = $oname\-cbar
 rm -irf $dname
 mkdir $dname
 
-cp ${template}/template.tex $dname/$oname.tex
+cp ${template}/instructions.tex $dname/instructions-$oname.tex
 cp ${template}/publish.tex $dname/publish-$oname.tex
 cp ${template}/s2views.txt  $dname
 cp ${template}/s2plot-prc.js $dname
@@ -100,7 +100,6 @@ set o1 = `echo "$width+$frame" | bc`
 set o2 = `echo "($histo*$height+$frame)/1" | bc`
 set o3 = `echo "((1-$histo)*$height+1)/1" | bc`
 
-echo $o1 $o2 $o3
 
 set crop1 = "${w1}x${h1}+${o1}+${o2}"
 set crop2 = "${w1}x${h2}+${o1}+${o3}"
@@ -125,22 +124,24 @@ set pheight=`file $pname.png | cut -f2 -d, | awk '{print $3}'`
 if ($pheight > $pwidth) then
    set string="scale=2;$pwidth/$pheight"
    set pratio=`echo $string | bc`
-   sed -i "" 's/OBJNAME/'$oname'/' $oname.tex
-   sed -i "" 's/HEIGHT/1.0/' $oname.tex
-   sed -i "" 's/WIDTH/'$pratio'/' $oname.tex
+   sed -i "" 's/OBJNAME/'$oname'/' instructions-$oname.tex
+   sed -i "" 's/HEIGHT/1.0/' instructions-$oname.tex
+   sed -i "" 's/WIDTH/'$pratio'/' instructions-$oname.tex
    sed -i "" 's/OBJNAME/'$oname'/' publish-$oname.tex
    sed -i "" 's/HEIGHT/1.0/' publish-$oname.tex
    sed -i "" 's/WIDTH/'$pratio'/' publish-$oname.tex
 else
    set string="scale=2;$pheight/$pwidth"
    set pratio=`echo $string | bc`
-   sed -i "" 's/OBJNAME/'$oname'/' $oname.tex
-   sed -i "" 's/HEIGHT/'$pratio'/' $oname.tex
-   sed -i "" 's/WIDTH/1.0/' $oname.tex
+   sed -i "" 's/OBJNAME/'$oname'/' instructions-$oname.tex
+   sed -i "" 's/HEIGHT/'$pratio'/' instructions-$oname.tex
+   sed -i "" 's/WIDTH/1.0/' instructions-$oname.tex
    sed -i "" 's/OBJNAME/'$oname'/' publish-$oname.tex
    sed -i "" 's/HEIGHT/'$pratio'/' publish-$oname.tex
    sed -i "" 's/WIDTH/1.0/' publish-$oname.tex
 endif
+
+
 
 # Deal with the colour bar/histogram image
 set cwidth=`file $cname.png | cut -f2 -d, | awk '{print $1}'`
@@ -149,15 +150,15 @@ set cheight=`file $cname.png | cut -f2 -d, | awk '{print $3}'`
 if ($cheight > $cwidth) then
    set string="scale=2;$cwidth/$cheight*$pratio"
    set ratio=`echo "$string" | bc`
-   sed -i "" 's/CHGHT/'$pratio'/' $oname.tex
-   sed -i "" 's/CWDTH/'$ratio'/' $oname.tex
+#   sed -i "" 's/CHGHT/'$pratio'/' instructions-$oname.tex
+#   sed -i "" 's/CWDTH/'$ratio'/' instructions-$oname.tex
    sed -i "" 's/CHGHT/'$pratio'/' publish-$oname.tex
    sed -i "" 's/CWDTH/'$ratio'/' publish-$oname.tex
 else
-   set string="scale=2;$cheight/$cwidth*$pratio"
+   set string="scale=3;$cheight/$cwidth"
    set ratio=`echo "$string" | bc`
-   sed -i "" 's/CHGHT/'$ratio'/' $oname.tex
-   sed -i "" 's/CWDTH/'1.0'/' $oname.tex
+#   sed -i "" 's/CHGHT/'$ratio'/' instructions-$oname.tex
+#   sed -i "" 's/CWDTH/'1.0'/' instructions-$oname.tex
    sed -i "" 's/CHGHT/'$ratio'/' publish-$oname.tex
    sed -i "" 's/CWDTH/'1.0'/' publish-$oname.tex
 endif
@@ -166,8 +167,9 @@ endif
 
 pdflatex publish-$oname.tex
 pdflatex publish-$oname.tex
+pdflatex instructions-$oname.tex
+pdflatex instructions-$oname.tex
 
 open -a "adobe reader" publish-$oname.pdf
-open -a "adobe reader" $oname.pdf
-
+open -a "adobe reader" instructions-$oname.pdf
 

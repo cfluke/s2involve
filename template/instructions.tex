@@ -63,17 +63,8 @@
 view with Adobe Reader (Version 8.0 or higher).
 \movieref[3Dgetview]{fig:OBJNAME}{Set default view}
 }
+\label{caption:fig1}
 \end{figure}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=WIDTH\linewidth,height=HEIGHT\linewidth,angle=0]{{OBJNAME-poster}.png}
-\includegraphics[width=CHGHT\linewidth,height=CWDTH\linewidth,angle=0]{{OBJNAME-cbar}.png}
-\end{center}
-\caption{OBJNAME. Three-dimensional visualisation performed with the {\sc S2PLOT}
-programming library (Barnes et al. 2006), using {\sc s2involve} (Fluke \& Barnes, {\em in prep}).}
-\end{figure}
-
 
 \newpage
 \section*{Instructions}
@@ -82,7 +73,7 @@ version 3.2 or higher) can be embedded as interactive 3-d figures in PDF documen
 prepared with {\sc pdflatex}.  
 
 
-All components required for recreating this PDF document are in the DIR\-OBJNAME
+All components required for recreating this PDF document are in the DIR-OBJNAME
 directory.  Running the {\sc generatepdf.csh} script again will remove any files, including
 those you may already have edited. 
 
@@ -90,11 +81,11 @@ those you may already have edited.
 To select the default view that will appear when your interactive figure is viewed
 with Adobe Reader (version 8.0 or higher):
 \begin{enumerate}
-\item You will need to change into the DIR\-OBJNAME directory to edit files and
+\item You will need to change into the DIR-OBJNAME directory to edit files and
 run {\tt pdflatex}.
 \item Modify the camera angle, choose any specific lighting or background colour 
 such that you have the desired default 3D view. 
-\item Click the label ``Set default view'' in the figure caption.
+\item Click the label ``Set default view'' in the caption of Figure \ref{caption:fig1}.
 \item In the pop-up window that opens, you will see text something like:\\
 
 \begin{verbatim}
@@ -115,11 +106,12 @@ examples of the correct format.
 
 \item Exit Adobe Reader.
 
-\item Execute the command:
+\item Execute the commands:
 \begin{verbatim}
-% pdflatex OBJNAME.tex
+% pdflatex publish-OBJNAME.tex
+% pdflatex instruction-OBJNAME.tex
 \end{verbatim}
-to update the interactive figure.
+to update the interactive figures.
 \end{enumerate}
 
 When you now view with Adobe Reader, the first view in this {\tt s2views.txt} file
@@ -127,18 +119,18 @@ will be the default configuration when the figure opens. Click on the
 interactive figure to access the 3D menu, and then you can select this, and
 other views, from the Views menu.
 
-Once you have finished modifying your views, remember to delete or comment out
-the caption line 
-\begin{verbatim}
-\movieref[3Dgetview]{fig:OBJNAME}{Set default view}
-\end{verbatim}
-and then execute the command:
-\begin{verbatim}
-% pdflatex OBJNAME.tex
-\end{verbatim}
+%Once you have finished modifying your views, remember to delete or comment out
+%the caption line 
+%\begin{verbatim}
+%\movieref[3Dgetview]{fig:OBJNAME}{Set default view}
+%\end{verbatim}
+%and then execute the command:
+%%\begin{verbatim}
+%%% pdflatex publish-OBJNAME.tex
+%%\end{verbatim}
 to update the interactive figure.
  
-{\bf Caution:} Any changes you make to the OBJNAME.tex or {\tt s2views.txt} 
+{\bf Caution:} Any changes you make to the publish-OBJNAME.tex or {\tt s2views.txt} 
 files will be lost if you re-run {\tt generatepdf.csh OBJNAME}.
 
 
